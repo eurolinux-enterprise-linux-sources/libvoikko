@@ -1,0 +1,149 @@
+General information
+===================
+
+This is libvoikko, library of free Finnish language tools. The library is
+written in C++ and it uses a left associative grammar for describing the
+morphology of Finnish language. The morphology is developed using Malaga
+natural language grammar development tool.
+
+Libvoikko provides spell checking, hyphenation, grammar checking and
+morphologican analysis for Finnish language. No other languages are
+supported at the moment, and there are no serious plans to add such
+support. This is because internals of this library may change significantly
+in future releases, and we think that generally useful bits and ideas
+(if any) should rather be merged to existing multi language tools such
+as Hunspell and LanguageTool. In fact, we hope to make libvoikko obsolete,
+but currently there are no other libraries that provide all the features
+we need. We feel that pushing new features to Hunspell where they would
+need to be maintained essentially indefinitely should not be done until
+we have gained enough experience to know which solutions work in the
+real world.
+
+This library is released under the GPL, version 2 or later. The author is
+willing to license selected parts under other free licenses (such as LGPL or
+MPL) if this will directly help the development of other free software
+products.
+
+
+Features
+========
+
+ - Spell checking using compound word and derivation rule system that is
+   largely compatible with widely used proprietary Finnish spell checkers
+   (Soikko, MS Word).
+ - Spelling suggestions that are generated to catch most probable typing
+   errors.
+ - Special spelling suggestion mode that can be used to correct errors
+   produced by optical character recognition software.
+ - Hyphenator with compound hyphenation based on morphological analysis.
+ - Various options to tune spell checking and hyphenation for different
+   purposes and applications.
+ - Grammar checking and context sensitive spell checking using paragraph
+   based API.
+ - String tokenizer and sentence splitter.
+ - Morphological analyzer.
+
+Documentation for using the library can be found from header file voikko.h.
+
+
+Build requirements
+==================
+
+C++ compiler (GCC), Glib developement headers and Python must be available
+in order to build this library.
+
+
+Runtime requirements
+====================
+
+The library needs Glib and a version of Suomi-malaga containing a file named
+voikko-fi_FI.pro. The file must start with the following line:
+
+info: Voikko-Dictionary-Format: 2
+
+This should be considered a strict requirement for now. While some parts
+of the library may work without Suomi-malaga, this mode of operation is
+not tested and not guaranteed to behave consistently across minor releases
+of the library.
+
+
+Search order for dictionary files
+=================================
+
+A set of available dictionary variants is built by examining the contents of the
+following directories. If a variant exists in more than one location, the first
+occurrence is used and the rest are ignored.
+
+1) Path given as the last argument to voikko_init_with_path, if that function is
+   used to initialize the library.
+2) Path specified by the environment variable VOIKKO_DICTIONARY_PATH, if the
+   variable is set in the environment of the process initializing the library.
+3) Only on platforms with Unix home directories (Linux, BSD and Mac OS X):
+   a) from directory $HOME/.voikko
+   b) from directory /etc/voikko
+4) Only on Windows:
+   a) Directory specified by the registry key
+      HKEY_CURRENT_USER\SOFTWARE\Voikko\DictionaryPath.
+   b) Directory specified by the registry key
+      HKEY_LOCAL_MACHINE\SOFTWARE\Voikko\DictionaryPath.
+5) Path specified at compile time using --with-dictionary-path (this defaults to
+   /usr/lib/voikko).
+
+To all of the paths above additional path component "/2" is appended at the end.
+This corresponds to the dictionary version and allows multiple versions of the same
+dictionary to be installed simultaneously.
+
+Variants are searched from subdirectories whose name start with "mor-". The
+identifier and other dictionary metadata are read from a file "voikko-fi_FI.pro"
+residing in that directory. If the file does not exist or is somehow considered
+invalid, that particular variant is ignored.
+
+One of the dictionaries is chosen to be the default dictionary by trying the
+following rules:
+
+1) If one of the subdirectories in the main directory paths described above has
+   name "mor-default", the default dictionary will be the variant that is found
+   from that directory. Note that this does not affect the actual decision about
+   the dictionary instance used to provide the variant. If, for example, there is
+   a directory $HOME/.voikko/2/mor-a containing variant "a" and a directory
+   /etc/voikko/2/mor-default containing variant "a", the variant "a" will become the
+   default but it will still be provided by $HOME/.voikko/2/mor-a.
+
+2) If no default is specified, variant "standard" is used as the default.
+
+3) If variant "standard" is not available, the variant with the name that comes
+   first in alphabetical order is selected as the default.
+
+
+Selection of the variant to use
+===============================
+
+The dictionary variant to be used is determined using the following rules, starting
+from rule 1:
+
+1) If the parameter 'langcode' given to functions voikko_init or voikko_init_with_path
+   is NULL, no dictionary will be loaded. The behaviour of the library after such
+   initialization is currently undefined.
+2) If the parameter 'langcode' given to functions voikko_init or voikko_init_with_path
+   is something else than "", "default" or "fi_FI", variant with that name is loaded.
+   If the variant is not available, an error is returned.
+3) If environment variable VOIKKO_DICTIONARY is defined, its value is used as the
+   name of the dictionary variant to load. If the variant is not available, an error
+   is returned.
+4) Finally, the default variant is loaded. If no dictionary variants are available,
+   an error is returned.
+
+
+Authors
+=======
+
+2006 - 2009 Harri Pitkänen (hatapitk@iki.fi)
+ * Maintainer, core library developer.
+1995 - 2008 Björn Beutel
+ * Author of the original LAG implementation (Malaga), sligthly simplified version
+   of which has been embedded into libvoikko.
+
+Website
+=======
+
+http://voikko.sourceforge.net
