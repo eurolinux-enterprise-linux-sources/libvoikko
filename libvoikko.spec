@@ -1,6 +1,6 @@
 Name:           libvoikko
 Version:        3.6
-Release:        3%{?dist}
+Release:        5%{?dist}
 Summary:        Voikko is a library for spellcheckers and hyphenators
 
 Group:          System Environment/Libraries
@@ -113,6 +113,12 @@ install -pm 0644 python/libvoikko.py $RPM_BUILD_ROOT%{python_sitelib}/
 %{python_sitelib}/%{name}.py*
 
 %changelog
+* Fri Jan 24 2014 Daniel Mach <dmach@redhat.com> - 3.6-5
+- Mass rebuild 2014-01-24
+
+* Fri Dec 27 2013 Daniel Mach <dmach@redhat.com> - 3.6-4
+- Mass rebuild 2013-12-27
+
 * Mon Jul 29 2013 Parag <paragn AT fedoraproject DOT org> - 3.6-2
 - Ah don't add %%{?_isa} for noarch packages
 
