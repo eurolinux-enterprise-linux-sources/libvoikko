@@ -1,0 +1,258 @@
+2009 - 2011 Harri Pitkänen <hatapitk@iki.fi>                    GPLv2+
+
+ Information provided from attribute maps of Analysis objects
+ ============================================================
+
+This file contains documentation for implementors of morphological
+analyzers (Analyzer) in libvoikko. Analyzer is an object that returns
+a set of Analysis objects given an input string. Analysis objects
+consist of key-value pairs where keys are ordinary C strings and
+values are wchar_t strings. The set of required and optional strings
+in the analysis results may be different for different languages or
+different implementations of the same language.
+
+Analyzers are required to be case insensitive. Information about
+requirements for character case should be provided within the analysis
+results, not by excluding results depending on the character case of
+the input string. This design makes it easier to implement efficient
+analysis operations for applications where character case does not
+matter or matters only in some specific situations.
+
+In order to improve reusability of code and to allow external
+applications to take advantage of this feature it is best to use the
+same set of keys and same structure for values where possible. This
+document describes the guidelines that implementors of Analyzer
+components are recommended (but not required) to follow when they
+implement this feature.
+
+ Attributes common to all languages
+ ==================================
+
+The following attributes should be provided by all implementations of
+Analyzer for all languages:
+
+ STRUCTURE
+ =========
+  This attribute describes morpheme boundaries, character case and
+  hyphenation restrictions for the word. The following characters
+  are used in the values of this attribute:
+
+  = Start of a new morpheme. This must also be present at the start
+    of a word.
+
+  - Hyphen. Word can be split in text processors after this character
+    without inserting an extra hyphen. If the hyphen is at morpheme
+    boundary, the boundary symbol = must be placed after the hyphen.
+
+  p Letter that is written in lower case in the standard form.
+
+  q Letter that is written in lower case in the standard form.
+    Hyphenation is forbidden before this letter.
+
+  i Letter that is written in upper case in the standard form.
+
+  j Letter that is written in upper case in the standard form.
+    Hyphenation is forbidden before this letter.
+
+  Examples:
+   Word: Matti-niminen -> STRUCTURE: =ipppp-=ppppppp
+   Word: DNA-näyte ->     STRUCTURE: =jjj-=ppppp
+   Word: autokauppa ->    STRUCTURE: =pppp=pppppp
+
+The following attributes are not currently used within libvoikko but
+they may be useful for external applications:
+
+ BASEFORM
+ ========
+  Base form of the given word.
+
+  Examples:
+   Word: kissalla -> BASEFORM: kissa
+
+ NUMBER
+ ======
+  Grammatical number of the word. Suggested values for this attribute
+  are "singular", "dual", "trial" and "plural".
+
+  Examples:
+   Word: kissa -> NUMBER: singular
+   Word: kissat -> NUMBER: plural
+
+ PERSON
+ ======
+  For verbs in active voice this attribute represents the person
+  (first, second or third). The person for passive voice can be
+  considered as the fourth voice if appropriate for the language.
+  Suggested values for this attribute are "1", "2", "3" and "4".
+
+  Examples:
+   Word: juoksen -> PERSON: 1
+   Word: juokset -> PERSON: 2
+
+ MOOD
+ ====
+  Mood of a verb. Suggested values for this attribute are
+  "indicative", "conditional", "imperative" and "potential".
+
+  Examples:
+   Word: juoksen -> MOOD: indicative
+   Word: juoksisin -> MOOD: conditional
+
+ TENSE
+ =====
+  Tense and aspect of a verb. Suggested values for this attribute are
+  "past_imperfective", "present_simple", (add more as needed).
+  
+  Examples:
+   Word: juoksen -> TENSE: present_simple
+   Word: juoksin -> TENSE: past_imperfective
+
+ NEGATIVE
+ ========
+  For all verbs this attribute indicates whether the verb is in
+  a connegative form. Suggested values: "false", "true", "both"
+  
+  Examples:
+   Word: sallitaan -> NEGATIVE: false
+   Word: sallita (as in "ei sallita") -> NEGATIVE: true
+   Word: maalaa (also "ei maalaa") -> NEGATIVE: both
+  
+ PARTICIPLE
+ ==========
+  Word is a participle of some sort. Suggested values for this attribute
+  are "present_active", "present_passive", "past_active", "past_passive",
+  "agent" and "negation" (add more as needed).
+  
+  Examples:
+   Word: juokseva    -> PARTICIPLE: present_active
+   Word: juostava    -> PARTICIPLE: present_passive
+   Word: juossut     -> PARTICIPLE: past_active
+   Word: juostu      -> PARTICIPLE: past_passive
+   Word: juoksema    -> PARTICIPLE: agent
+   Word: juoksematon -> PARTICIPLE: negation
+
+ POSSESSIVE
+ ==========
+  Word contains information about possessor. For now this is used to
+  indicate the use of possessive suffix in Finnish nouns.
+
+  Examples:
+   Word: kissani  -> POSSESSIVE: 1s
+   Word: kissasi  -> POSSESSIVE: 2s
+   Word: kissamme -> POSSESSIVE: 1p
+   Word: kissanne -> POSSESSIVE: 2p
+   Word: kissansa -> POSSESSIVE: 3
+
+ COMPARISON
+ ==========
+  Word is comparable (adjective). Suggested values for this attribute are
+  "positive", "comparative" and "superlative".
+  
+  Examples:
+   Word: sininen   -> COMPARISON: positive
+   Word: sinisempi -> COMPARISON: comparative
+   Word: sinisin   -> COMPARISON: superlative
+
+ Attributes for Finnish language
+ ===============================
+
+The following attributes are specific to Finnish language. Some are
+currently used within libvoikko for improved language support, others
+are provided only as information for external applications.
+
+ Extensions to MOOD
+ ==================
+  Mainly due to structure of Suomi-malaga MOOD is also used to describe
+  some non-finite verb forms. For that purpose the following additional
+  attribute values are used:
+  
+   - A-infinitive (as in "juosta")
+   - E-infinitive (as in "juostessa")
+   - MA-infinitive (as in "juoksemassa", "juoksemasta", "juoksemaan" etc.)
+
+ CLASS
+ =====
+  Sanan sanaluokka. Attribuutti on käytössä libvoikon sisällä.
+  Attribuutin mahdolliset arvot ovat seuraavat:
+   - nimisana (yleisnimi)
+   - laatusana
+   - nimisana_laatusana (sama kuin erilliset analyysit nimisanana ja
+     laatusanana)
+   - teonsana
+   - seikkasana
+   - asemosana
+   - suhdesana
+   - huudahdussana
+   - sidesana
+   - etunimi
+   - sukunimi
+   - paikannimi
+   - nimi (muu erisnimi kuin etu-, suku- tai paikannimi)
+   - kieltosana
+   - lyhenne
+   - lukusana
+
+ SIJAMUOTO
+ =========
+  Nominin sijamuoto. Attribuutti on käytössä libvoikon sisällä.
+  Attribuutin mahdolliset arvot ovat seuraavat:
+   - nimento
+   - omanto
+   - osanto
+   - olento
+   - tulento
+   - kohdanto
+   - sisaolento
+   - sisaeronto
+   - sisatulento
+   - ulkoolento
+   - ulkoeronto
+   - ulkotulento
+   - vajanto
+   - seuranto
+   - keinonto
+   - kerrontosti (esim. "nopeasti")
+  
+ KYSYMYSLIITE
+ ============
+  Sanaan liittyy kysymysliite -ko tai -kö. Attribuutin ainoa sallittu
+  arvo on "true". Jos sanaan ei liity kysymysliitettä, attribuuttia
+  ei ole.
+
+ FOCUS
+ =====
+  Sanaan liittyy fokuspartikkeli -kin tai -kAAn.
+
+  Esimerkkejä:
+   Sana: kissakin  -> FOCUS: kin
+   Sana: kissakaan -> FOCUS: kaan
+
+ WORDBASES
+ =========
+  Sanan osien perusmuodot. Attribuutti ei ole käytössä libvoikon
+  sisällä. Attribuutin arvona on sanan perusmuoto, jossa yhdyssanan
+  osat ja päätteet on erotettu toisistaan +-merkillä. Lisäksi kunkin
+  yhdyssanan osan perusmuoto on osan perässä suluissa.
+
+  Esimerkkejä:
+   Sana: köydenvetoa ->     WORDBASES: +köyde(köysi)+n+veto(veto)
+   Sana: Alkio-opistossa -> WORDBASES: +alkio(Alkio)+-+opisto(opisto)
+                                       +alkio(alkio)+-+opisto(opisto)
+
+  Johdinpäätteiden perusmuodot ovat suluissa siten, että päätteen edessä
+  on +-merkki:
+   Sana: kansalliseepos ->  WORDBASES: +kansa(kansa)+llis(+llinen)+eepos(eepos)
+
+ WORDIDS
+ =======
+  Viittaukset sanan osiin Joukahaisessa. Attribuutti ei ole käytössä
+  libvoikon sisällä. Attribuutin arvona on sanan perusmuoto, jossa
+  yhdyssanan osat ja päätteet on erotettu toisistaan +-merkillä.
+  Lisäksi kunkin yhdyssanan osan tietue-id on osan perässä suluissa.
+
+  Esimerkkejä:
+   Sana: köydenvetoa ->     WORDBASES: +köyde(w506953)+n+veto(w517284)
+                                       +köyde(w506953)+n+veto(w523540)
+                                       +köyde(w506953)+n+veto(w525160)
+   Sana: Alkio-opistossa -> WORDBASES: +alkio(w518215)+-+opisto(w510148)
+                                       +alkio(w500068)+-+opisto(w510148)

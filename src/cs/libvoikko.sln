@@ -1,0 +1,51 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libvoikko", "libvoikko\libvoikko.csproj", "{23063968-7427-4AD9-B068-C437E8B97449}"
+EndProject
+Project("{9344bdbb-3e7f-41fc-a0dd-8665d75ee146}") = "Packages", "Packages.mdproj", "{13ED8739-FCFC-44F8-A0F6-308051C6B2AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "libvoikko.tests", "libvoikko.tests\libvoikko.tests.csproj", "{FFCFF542-7934-4777-99C7-AC452666977C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{13ED8739-FCFC-44F8-A0F6-308051C6B2AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{13ED8739-FCFC-44F8-A0F6-308051C6B2AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23063968-7427-4AD9-B068-C437E8B97449}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{23063968-7427-4AD9-B068-C437E8B97449}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{23063968-7427-4AD9-B068-C437E8B97449}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{23063968-7427-4AD9-B068-C437E8B97449}.Release|Any CPU.Build.0 = Release|Any CPU
+		{FFCFF542-7934-4777-99C7-AC452666977C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{FFCFF542-7934-4777-99C7-AC452666977C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{FFCFF542-7934-4777-99C7-AC452666977C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{FFCFF542-7934-4777-99C7-AC452666977C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = libvoikko\libvoikko.csproj
+		Policies = $0
+		$0.TextStylePolicy = $1
+		$1.inheritsSet = null
+		$1.scope = text/x-csharp
+		$0.CSharpFormattingPolicy = $2
+		$2.StatementBraceStyle = NextLine
+		$2.BeforeMethodDeclarationParentheses = False
+		$2.BeforeMethodCallParentheses = False
+		$2.BeforeConstructorDeclarationParentheses = False
+		$2.BeforeDelegateDeclarationParentheses = False
+		$2.NewParentheses = False
+		$2.inheritsSet = Mono
+		$2.inheritsScope = text/x-csharp
+		$2.scope = text/x-csharp
+		$0.TextStylePolicy = $3
+		$3.FileWidth = 120
+		$3.TabWidth = 4
+		$3.EolMarker = Unix
+		$3.inheritsSet = Mono
+		$3.inheritsScope = text/plain
+		$3.scope = text/plain
+	EndGlobalSection
+EndGlobal

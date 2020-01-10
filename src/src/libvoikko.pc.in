@@ -1,0 +1,11 @@
+prefix=@prefix@
+exec_prefix=@exec_prefix@
+libdir=@libdir@
+includedir=@includedir@
+
+Name: libvoikko
+Description: Library for Finnish language tools
+URL: http://voikko.sourceforge.net
+Version: @VERSION@
+Libs: -L${libdir} -lvoikko
+Cflags: -I${includedir}
